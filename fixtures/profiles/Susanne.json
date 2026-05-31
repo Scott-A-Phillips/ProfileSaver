@@ -1,0 +1,33 @@
+{
+  "id": "profile-2026-05-31-vs2vp",
+  "url": "https://www.linkedin.com/in/susanne-hahn-businessleader/",
+  "capturedAt": "2026-05-31T10:51:23.745Z",
+  "documentTitle": "Susanne Hahn | LinkedIn",
+  "groundTruth": {
+    "name": "Susanne Hahn",
+    "jobTitle": "Founding Partner & CEO",
+    "organisation": "SKV Invest GmbH"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "Experience Founding Partner & CEO SKV Invest GmbH Dec 2020 - Present · 5 yrs 6 mos Award-Winning Impact Investor & Venture Builder www.skvinvest.de | Zefyron | HyperPark | SENTImotion / SENTImotion water | MaxifyIP | ENPERIUM / MegaLion Europe | Entrinergy | CIDA | 1886Ventures / Globe Fuel Cell Systems … more Geschäftsführung, Business Development and +3 skills Member of the Board of Directors & Member of the People and Sustainability Committee Nokian Tyres plc Apr 2022 - Present · 4 yrs 2 mos Founding Partner & Member of the Board HyperPark Ltd. Jul 2023 - Present · 2 yrs 11 mos Shanghai, China Founding Partner & Member of the Board Zefyron Oct 2021 - Present · 4 yrs 8 mos Award-Winning Innovation Platform to Nurture Business & Customized Innovation Services. Zefyron: AI driven fundraising & investment Member of the Advisory Board Klingele Paper & Packaging SE & Co. KG Klingele Paper & Packaging Group Aug 2023 - Present · 2 yrs 10 mos Show all",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D5603AQGtZPY55HnpMg/profile-displayphoto-crop_800_800/B56ZtKsqSpHAAI-/0/1766484781793?e=1781740800&v=beta&t=waOlGdcoyqXwpn6AZwYyfB631ArvZWy-oDZt7oS3ldg"
+  },
+  "extractionAtCapture": {
+    "name": "Susanne Hahn",
+    "jobTitle": "Founding Partner & CEO",
+    "organisation": "SKV Invest GmbH",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D5603AQGtZPY55HnpMg/profile-displayphoto-crop_800_800/B56ZtKsqSpHAAI-/0/1766484781793?e=1781740800&v=beta&t=waOlGdcoyqXwpn6AZwYyfB631ArvZWy-oDZt7oS3ldg",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": ""
+}

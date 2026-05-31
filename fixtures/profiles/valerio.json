@@ -1,0 +1,33 @@
+{
+  "id": "profile-2026-05-31-4jv44",
+  "url": "https://www.linkedin.com/in/aixinnovation/",
+  "capturedAt": "2026-05-31T10:53:26.740Z",
+  "documentTitle": "Valerio D. Gulli | LinkedIn",
+  "groundTruth": {
+    "name": "Valerio D. Gulli",
+    "jobTitle": "Senior Business Development Manager & Strategic Partnerships",
+    "organisation": "European Space Imaging"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "Experience Senior Business Development Manager & Strategic Partnerships European Space Imaging · Full-time Feb 2023 - Present · 3 yrs 4 mos Greater Munich Metropolitan Area LinkedIn helped me get this job helped me get this job As a Senior Business Development Manager at EUSI, I focus on geospatial intelligence, VHR data, and remote sensing solutions. With 15+ years of international experience in both research and industry, I bring a unique blend of technical acumen, innovation mindset, and strategic foresight. My focus is expanding EUSI's footprint and capabilities, overseeing strategic accounts and business development across 10+ European countries, including Italy, Hungary, Norway, Sweden, and the Baltic states. My background in technical consulting and business development has honed my expertise in bringing to market and selling complex, high-value integrated payloads. This includes cutting-edge technologies like Electro-Optical, LiDAR, alongside advanced geoint applications, photogrammetry, and sophisticated industrial software solutions. As a technology and strategy consultant, I'm committed to delivering innovative solutions that empower clients and partners to optimise their geospatial data use, ensuring they achieve critical business objectives. A primary responsibility is to drive company growth through new business models, exceptional client service, and incubating novel product ideas. I also play a crucial role in forging key strategic partnerships with top-tier \"new space\" companies, dynamic startups, and academic institutions. In the past year, we've onboarded Umbra, PIXXEL, and Albedo, significantly enhancing our solution portfolio. I work closely with our CEO and management, providing direct reports, and advice with a particular emphasis on developing innovative AI-powered products and geospatial intelligence solutions. I oversee relationships with crucial European geospatial resellers, including Planetek Italia, KSAT, CGG, e-GEOS, Oikon, and Airbus.",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4D03AQEENstwWqI7bA/profile-displayphoto-crop_800_800/B4DZs4DLULJEAI-/0/1766171916093?e=1781740800&v=beta&t=n8mkR8LvRX-H-d9sVF3ZYHPSGZVqUEGbpfW5uYIddwE"
+  },
+  "extractionAtCapture": {
+    "name": "Valerio D. Gulli",
+    "jobTitle": "Senior Business Development Manager & Strategic Partnerships",
+    "organisation": "European Space Imaging",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4D03AQEENstwWqI7bA/profile-displayphoto-crop_800_800/B4DZs4DLULJEAI-/0/1766171916093?e=1781740800&v=beta&t=n8mkR8LvRX-H-d9sVF3ZYHPSGZVqUEGbpfW5uYIddwE",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": ""
+}

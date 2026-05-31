@@ -1,0 +1,33 @@
+{
+  "id": "profile-2026-05-31-ceszu",
+  "url": "https://www.linkedin.com/in/elenameyer1/",
+  "capturedAt": "2026-05-31T10:48:05.640Z",
+  "documentTitle": "Elena Meyer | LinkedIn",
+  "groundTruth": {
+    "name": "Elena Meyer",
+    "jobTitle": "Founder and Principal Strategist",
+    "organisation": "Destination Global LLC"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "Experience Founder and Principal Strategist Destination Global LLC · Self-employed Jul 2023 - Present · 2 yrs 11 mos Greater Boston · Hybrid Destination Global is a boutique advisory and strategy practice that supports high-achieving senior leaders in designing their next chapter with clarity, structure and sustainable energy. Strategic Advisory and Product Architecture • Design and deliver high-end strategic transformation programs for senior leaders, including annual mastermind groups, multi-week master groups and premium 1 to 1 advisory containers. • Architect the Strategy and Energy of Scale methodology used across all programs and retreats. • Provide strategic guidance to clients on business focus, premium offer design, portfolio career development and sustainable execution systems. Program Development and Delivery • Built and led multiple cohorts of Russian and English language master groups supporting women in strategic clarity, identity evolution and energy aligned growth. • Designed and facilitated an eight person immersive retreat in Dubai focused on annual planning, vision architecture and energy work. • Delivered immersive VIP strategy days and executive offsites in California and New York for business leaders seeking clarity, alignment and expansion. Global Client Engagement • Advised corporate professionals, founders and senior leaders across North America, Europe and the Middle East. • Supported strategic roadmapping for marketing, sales and customer success teams at Fullscript, reporting to the Vice President of Marketing and Sales. • Led go to market planning for an SMB Ambassadors Program in EMEA. • Managed and developed a distributed team of seven direct contributors. Thought Leadership and Brand Development • Expanded Destination Global into a multi product ecosystem that integrates strategic advisory, energy based performance systems and premium experiential learning. • Developed intellectual property that combines strategic clarity frameworks w",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4E03AQH3vh8nwVGmMw/profile-displayphoto-crop_800_800/B4EZ2zqhTUJEAI-/0/1776835764811?e=1781740800&v=beta&t=EULLZvo3YBDDKmLDY4UDOPgcplNz5xhIPnQOSCVZnFk"
+  },
+  "extractionAtCapture": {
+    "name": "Elena Meyer",
+    "jobTitle": "Founder and Principal Strategist",
+    "organisation": "Destination Global LLC",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4E03AQH3vh8nwVGmMw/profile-displayphoto-crop_800_800/B4EZ2zqhTUJEAI-/0/1776835764811?e=1781740800&v=beta&t=EULLZvo3YBDDKmLDY4UDOPgcplNz5xhIPnQOSCVZnFk",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": ""
+}

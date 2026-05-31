@@ -1,0 +1,33 @@
+{
+  "id": "profile-2026-05-31-mj45y",
+  "url": "https://www.linkedin.com/in/joergstorm/",
+  "capturedAt": "2026-05-31T10:52:26.674Z",
+  "documentTitle": "Dr. Joerg Storm | LinkedIn",
+  "groundTruth": {
+    "name": "Dr. Joerg Storm",
+    "jobTitle": "Strategic Advisor & Brand Ambassador",
+    "organisation": "CoreAIVideo"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "Experience Strategic Advisor & Brand Ambassador CoreAIVideo · Self-employed Apr 2026 - Present · 2 mos Remote CEO & Founder Dr. Storm Advisory GmbH · Self-employed Oct 2025 - Present · 8 mos San Francisco Bay Area · Remote Dr. Storm Advisory GmbH is an executive media, growth, and advisory firm that helps companies and leaders build visibility, authority, and measurable business outcomes through LinkedIn, premium media, and strategic consulting. We operate an integrated platform spanning LinkedIn, a leading AI newsletter, and a C-level podcast—reaching 557,000+ decision-makers across 197 countries and a combined 1.35M+ LinkedIn followers. Our audience includes CEOs, CIOs, CTOs, founders, and senior executives worldwide. Our core work includes end-to-end LinkedIn consulting and execution: positioning, content strategy, content production, publishing, analytics, and growth. We also take over and run complete LinkedIn accounts for executives and companies—operating them as a fully managed function, from strategy to daily execution. We deliver paid growth programs via LinkedIn Ads as well as newsletter sponsorships and premium placements to reach senior decision-makers at scale. On the advisory side, we support organizations with AI, IT, and corporate strategy, including use case prioritization, operating models, governance, and execution support—focused on outcomes, not theory. Additional services include keynotes, moderations, interviews, podcast production, and teaching in international management and digital leadership, including university-level lecturing (docent). Dr. Storm Advisory GmbH works with leaders who want to scale visibility, build trust, and convert influence into growth. … more +5 CEOs, Management and +4 skills Investor & Advisory Board Member Zefyron · Self-employed May 2025 - Present · 1 yr 1 mo Stuttgart, Baden-Württemberg, Germany · Remote Zefyron is a Stuttgart-based digital platform revolutionizing the startup ecosystem by connecting entrepreneur",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4E03AQHZY34tV8zR1A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1711311065326?e=1781740800&v=beta&t=SStWrhAqMw6d21Fgeq5WjAg1kSuDTazmX_hOIRoB_M0"
+  },
+  "extractionAtCapture": {
+    "name": "Dr. Joerg Storm",
+    "jobTitle": "Strategic Advisor & Brand Ambassador",
+    "organisation": "CoreAIVideo",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4E03AQHZY34tV8zR1A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1711311065326?e=1781740800&v=beta&t=SStWrhAqMw6d21Fgeq5WjAg1kSuDTazmX_hOIRoB_M0",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": ""
+}

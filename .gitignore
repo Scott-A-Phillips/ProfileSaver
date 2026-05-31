@@ -1,0 +1,30 @@
+# Chrome extension packaging
+*.zip
+*.crx
+release/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Local secrets (never commit tokens)
+# The extension stores tokens in chrome.storage, but just in case:
+*.env
+*.pem
+secrets.txt
+
+# Node / build artifacts (if someone adds a build step later)
+node_modules/
+dist/
+build/
+out/
+*.log
+
+# Temporary test files
+test-*.html
+tmp/

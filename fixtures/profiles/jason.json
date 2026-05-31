@@ -1,0 +1,33 @@
+{
+  "id": "profile-2026-05-31-akva5",
+  "url": "https://www.linkedin.com/in/rajiv-giri/",
+  "capturedAt": "2026-05-31T10:50:17.102Z",
+  "documentTitle": "Rajiv Narayan Giri | LinkedIn",
+  "groundTruth": {
+    "name": "Rajiv Narayan Giri",
+    "jobTitle": "CEO & Founder - Chief Transformation Officer",
+    "organisation": "Marx Enterprise Transformation Architecture"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "Experience CEO & Founder - Chief Transformation Officer Marx Enterprise Transformation Architecture · Self-employed Jul 2015 - Present · 10 yrs 11 mos London, United Kingdom Chief Digital & AI Architect & Tech Investor Artificial Intelligence (AI), Program Management and +21 skills CEO & Founder Marx Group Holdings · Self-employed Sep 2008 - Present · 17 yrs 9 mos Greater London, England, United Kingdom · Hybrid Global Staffing Solutions Platform as a Service (PAAS), Human Resources (HR) and +3 skills Principal Cloud Architect (Contractor) ALDI SÜD Apr 2018 - Sep 2020 · 2 yrs 6 mos Greater Dusseldorf Area Data as a Service (DaaS), Change Management and +10 skills Lead Principal Architect (Contractor) PwC Jan 2018 - Dec 2018 · 1 yr London, United Kingdom Platform as a Service (PAAS), Enterprise Architecture and +2 skills Sen. Technical Architect (contractor) Accenture Oct 2017 - Apr 2018 · 7 mos London, Greater London, United Kingdom Platform as a Service (PAAS), Enterprise Architecture and +2 skills Show all",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHfS_Q6FTsX5w/profile-displayphoto-shrink_800_800/B4DZNnmLt9HQAc-/0/1732609887807?e=1781740800&v=beta&t=8gS5RG0tt4lZGtiPkK1IjVsZdFODZAfLGT3byJgc7Dw"
+  },
+  "extractionAtCapture": {
+    "name": "Rajiv Narayan Giri",
+    "jobTitle": "CEO & Founder - Chief Transformation Officer",
+    "organisation": "Marx Enterprise Transformation Architecture",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHfS_Q6FTsX5w/profile-displayphoto-shrink_800_800/B4DZNnmLt9HQAc-/0/1732609887807?e=1781740800&v=beta&t=8gS5RG0tt4lZGtiPkK1IjVsZdFODZAfLGT3byJgc7Dw",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": ""
+}
