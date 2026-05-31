@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn to Notion</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <div class="popup-header">
+      <div class="header-content">
+        <div class="logo">📥</div>
+        <div>
+          <h1>LinkedIn → Notion</h1>
+          <p class="subtitle">Save profiles instantly</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="popup-body">
+
+      <!-- Status Banner -->
+      <div id="status-banner" class="status-banner hidden">
+        <span id="status-text"></span>
+      </div>
+
+      <!-- Settings Form -->
+      <div class="settings-section">
+        <h2>⚙️ Notion Settings</h2>
+
+        <div class="field">
+          <label for="notion-token">Notion Integration Token</label>
+          <input
+            type="password"
+            id="notion-token"
+            placeholder="ntn_••••••••••••••••••••••••••••••••"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <p class="hint">Create at <a href="https://www.notion.so/my-integrations" target="_blank">notion.so/my-integrations</a></p>
+        </div>
+
+        <div class="field">
+          <label for="database-id">Database ID</label>
+          <input
+            type="text"
+            id="database-id"
+            placeholder="32-character ID from your Notion database URL"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <p class="hint">Found in the database URL after <code>/</code> (e.g. <code>abc123def456...</code>)</p>
+        </div>
+
+        <div class="button-row">
+          <button id="save-btn" class="btn btn-primary">Save Settings</button>
+          <button id="test-btn" class="btn btn-secondary">Test Connection</button>
+          <button id="clear-btn" class="btn btn-danger">Clear</button>
+        </div>
+
+        <div class="setting-row" style="margin-top: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="use-photo-as-icon" checked>
+            <span>Use LinkedIn profile photo as the Notion page icon</span>
+          </label>
+          <p class="hint" style="margin-top: 4px;">This sets the photo as the page icon (visible in database views and page header). Works with external image URLs.</p>
+        </div>
+      </div>
+
+      <!-- Advanced Property Mapping -->
+      <details class="advanced-section">
+        <summary>🔧 Advanced: Custom Property Names</summary>
+        <p class="hint">Only change these if your Notion database uses different column names.</p>
+        
+        <div class="mapping-grid">
+          <div class="map-field">
+            <label for="map-name">Name (Title)</label>
+            <input id="map-name" type="text" value="Name">
+          </div>
+          <div class="map-field">
+            <label for="map-headline">Job Title</label>
+            <input id="map-headline" type="text" value="Job Title">
+          </div>
+          <div class="map-field">
+            <label for="map-company">Organisation</label>
+            <input id="map-company" type="text" value="Organisation">
+          </div>
+          <div class="map-field">
+            <label for="map-profileUrl">Profile URL</label>
+            <input id="map-profileUrl" type="text" value="LinkedIn">
+          </div>
+          <div class="map-field">
+            <label for="map-profilePicture">Profile Photo</label>
+            <input id="map-profilePicture" type="text" value="Profile Photo">
+          </div>
+        </div>
+        <button id="reset-map-btn" class="btn btn-secondary" style="margin-top: 8px; font-size: 12px;">Reset to Defaults</button>
+      </details>
+
+      <!-- Debug / Extraction Tools (for building the golden profiles corpus) -->
+      <details class="advanced-section">
+        <summary>🛠️ Debug: Capture &amp; Preview Extraction</summary>
+        <p class="hint">Tools to help build a reliable extractor using real profile examples stored in the repo.</p>
+
+        <div class="button-row" style="margin-bottom: 8px;">
+          <button id="capture-btn" class="btn btn-primary">Capture Current Profile</button>
+          <button id="preview-btn" class="btn btn-secondary">Preview Extraction</button>
+        </div>
+
+        <!-- Capture results area -->
+        <div id="capture-results" class="debug-panel hidden">
+          <h4>Captured Data</h4>
+          <div class="field">
+            <label>Ground Truth (prefilled from current extraction — please correct)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+              <input id="gt-name" type="text" placeholder="Name">
+              <input id="gt-jobTitle" type="text" placeholder="Job Title (most important)">
+              <input id="gt-organisation" type="text" placeholder="Organisation (most important)">
+            </div>
+          </div>
+          <button id="copy-json-btn" class="btn btn-secondary" style="margin-top: 6px; font-size: 12px;">Copy as JSON (for fixtures/profiles/)</button>
+          <div id="capture-status" class="hint" style="margin-top: 4px;"></div>
+        </div>
+
+        <!-- Preview results area -->
+        <div id="preview-results" class="debug-panel hidden">
+          <h4>Current Extraction Result</h4>
+          <div id="preview-output" class="debug-output"></div>
+          <div id="preview-status" class="hint" style="margin-top: 4px;"></div>
+        </div>
+
+        <!-- Golden Profile Comparison (mismatch highlighting) -->
+        <div class="debug-panel" style="margin-top: 12px;">
+          <h4>Compare Live Extraction vs Golden Profile</h4>
+          <p class="hint" style="margin-bottom: 6px;">Paste the contents of a <code>fixtures/profiles/*.json</code> file below, then click Compare. Great for spotting exactly where extraction diverges from ground truth.</p>
+          <textarea id="golden-json" placeholder="Paste full golden profile JSON here..." style="width: 100%; height: 80px; font-family: monospace; font-size: 11px; box-sizing: border-box;"></textarea>
+          <button id="compare-golden-btn" class="btn btn-secondary" style="margin-top: 6px; font-size: 12px;">Compare with Current Tab</button>
+          <div id="compare-results" class="debug-output" style="margin-top: 8px; display: none;"></div>
+          <div id="compare-status" class="hint" style="margin-top: 4px;"></div>
+        </div>
+      </details>
+
+      <!-- Instructions -->
+      <details class="help-section" open>
+        <summary>📖 Quick Setup (click to collapse)</summary>
+        <ol class="setup-steps">
+          <li>
+            Go to <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integrations</a> → <strong>New integration</strong>.
+          </li>
+          <li>Give it a name (e.g. "LinkedIn Saver"), select your workspace, and click <strong>Submit</strong>. Copy the <strong>Internal Integration Token</strong> (starts with <code>ntn_</code>).</li>
+          <li>In Notion, create or open a database. You can use any property names you like — configure the exact names in the <strong>Advanced: Custom Property Names</strong> section below after saving your token/DB ID.</li>
+          <li>Click <strong>⋯</strong> → <strong>Connections</strong> → invite your new integration to the database.</li>
+          <li>Copy the <strong>Database ID</strong> from the browser URL (the long string after the workspace name).</li>
+          <li>Paste both values above and click <strong>Save Settings</strong>, then <strong>Test Connection</strong>.</li>
+        </ol>
+        <p class="note"><strong>Tip:</strong> The first time you save a profile, the extension will create a new page in the chosen database with the extracted fields.</p>
+      </details>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer">
+      <div class="footer-links">
+        <span class="version">v1.0.0</span>
+        <a href="https://developers.notion.com/docs" target="_blank">Notion API Docs</a>
+      </div>
+      <p class="disclaimer">Your token is stored locally in your browser only. Never shared.</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

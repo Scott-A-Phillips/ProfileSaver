@@ -1,0 +1,38 @@
+{
+  "id": "example-profile-2026-04-12",
+  "url": "https://www.linkedin.com/in/example-person-...",
+  "capturedAt": "2026-04-12T12:00:00.000Z",
+  "documentTitle": "Example Person | LinkedIn",
+  "groundTruth": {
+    "name": "Example Person",
+    "jobTitle": "Chief Whatever Officer",
+    "organisation": "Example Company"
+  },
+  "raw": {
+    "topCard": {
+      "text": "Example Person\nChief Whatever Officer at Example Company"
+    },
+    "firstExperienceCard": {
+      "lines": [
+        "Chief Whatever Officer",
+        "Example Company · Full-time",
+        "Jan 2025 - Present · 4 mos"
+      ],
+      "structuralHints": {
+        "matchedSelector": "section#experience .pvs-list__item",
+        "hasPvsListItem": true
+      }
+    },
+    "experienceSectionText": "Example Company logo\nChief Whatever Officer\nExample Company · Full-time\nJan 2025 - Present · 4 mos\n..."
+  },
+  "extractionAtCapture": {
+    "name": "Example Person",
+    "jobTitle": "Chief Whatever Officer",
+    "organisation": "Example Company",
+    "sources": {
+      "jobTitle": "experience-dom",
+      "organisation": "experience-dom"
+    }
+  },
+  "notes": "Example of a well-structured modern profile. Use this as a template."
+}

@@ -1,0 +1,31 @@
+{
+  "id": "profile-2026-05-31-y2vlx",
+  "url": "https://www.linkedin.com/in/mbrootedimpact/",
+  "capturedAt": "2026-05-31T02:09:07.006Z",
+  "documentTitle": "Melissa B. | LinkedIn",
+  "groundTruth": {
+    "name": "Melissa B.",
+    "jobTitle": "CEO + Founder",
+    "organisation": "Rooted Impact Consulting, LLC"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "experience supporting teams across industries and locations, Melissa brings a steady, thoughtful approach to the behind-the-scenes work that keeps businesses running well. Her background in operations, HR, and people management allows her to see where things quietly break down and how to build systems that actually support the humans doing the work. Melissa’s work focuses on creating clarity where things feel scattered. This includes strengthening HR foundations, streamlining workflows, documenting processes, supporting team growth, and building operational structures that are sustainable, compliant, and easy to maintain. She believes systems should serve people, not slow them down, and that good support should reduce stress, not add more complexity. Rooted Impact Consulting was founded on the belief that businesses grow best when they are supported with care, honesty, and intention. Melissa is especially passionate about helping values-driven leaders create healthier work environments, stronger team experiences, and operations that feel aligned with how they want to lead. Melissa holds a master’s degree in Applied Psychology and has additional training in HR and DEIB, which informs her people-centered approach to operations and team support. If you’re feeling like your business could use clearer systems or steadier support, you’re welcome to join Melissa’s interest list. She reviews each submission personally and reaches out when there’s capacity for new client work. https://www.rootedimpactconsulting.com/ … more Top skills Confidentiality • Project Management • Organization Skills • Human Resources (HR) • Operations Management Services Melissa provides operations and HR support for small businesses that want clearer systems and steadier support behind the sce"
+  },
+  "extractionAtCapture": {
+    "name": "Melissa B.",
+    "jobTitle": "",
+    "organisation": "",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": ""
+}

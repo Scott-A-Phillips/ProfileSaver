@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn to Notion",
+  "version": "1.0.0",
+  "description": "Save LinkedIn profiles to your Notion database with one click. Extracts name, headline, company, location, about, and experience.",
+  "author": "linkedin-notion-extension",
+  "homepage_url": "https://github.com/yourname/linkedin-notion-extension",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://api.notion.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/in/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "LinkedIn to Notion - Settings"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*.png"],
+      "matches": ["https://www.linkedin.com/*"]
+    }
+  ]
+}
