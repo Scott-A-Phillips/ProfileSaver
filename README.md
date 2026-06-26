@@ -13,6 +13,14 @@ Save LinkedIn profiles (and company pages) to a Notion database with one click.
 
 ## Installation
 
+### Chrome Web Store (Recommended)
+
+1. Visit the [Chrome Web Store listing](https://chromewebstore.google.com/detail/YOUR_EXTENSION_ID) <!-- TODO: replace with actual extension ID after publishing -->
+2. Click **Add to Chrome**.
+3. Pin the extension if desired.
+
+### Developer Mode (Unpacked)
+
 1. Clone or download this repo.
 2. Open Chrome → `chrome://extensions`
 3. Enable **Developer mode** (top right).
