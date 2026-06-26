@@ -47,23 +47,6 @@ function makeRichText(content, maxLength = 1800) {
 /**
  * Create a paragraph block containing a hyperlink.
  */
-function paragraphWithLink(text, url) {
-  return {
-    object: 'block',
-    type: 'paragraph',
-    paragraph: {
-      rich_text: [
-        {
-          text: {
-            content: text,
-            link: { url: url }
-          }
-        }
-      ]
-    }
-  };
-}
-
 /**
  * Convert a value we prepared (as rich_text / url / title) into the correct format
  * based on the actual property type in the user's Notion database.
@@ -129,61 +112,6 @@ function convertToNotionPropertyFormat(naiveValue, actualPropDef) {
 }
 
 /**
- * Create a paragraph block.
- */
-function paragraphBlock(text) {
-  return {
-    object: 'block',
-    type: 'paragraph',
-    paragraph: {
-      rich_text: makeRichText(text)
-    }
-  };
-}
-
-/**
- * Create a heading_2 block.
- */
-function headingBlock(text) {
-  return {
-    object: 'block',
-    type: 'heading_2',
-    heading_2: {
-      rich_text: makeRichText(text, 200)
-    }
-  };
-}
-
-/**
- * Create a bulleted list item block.
- */
-function bulletBlock(text) {
-  return {
-    object: 'block',
-    type: 'bulleted_list_item',
-    bulleted_list_item: {
-      rich_text: makeRichText(text, 400)
-    }
-  };
-}
-
-/**
- * Create an external image block (for embedding the LinkedIn profile photo in page content).
- */
-function externalImageBlock(url) {
-  return {
-    object: 'block',
-    type: 'image',
-    image: {
-      type: 'external',
-      external: {
-        url: url
-      }
-    }
-  };
-}
-
-/**
  * Build the Notion page properties + children from extracted profile data.
  * Uses user-configured property names from propertyMap for flexibility.
  */
@@ -226,27 +154,9 @@ function buildNotionPayload(profile) {
     };
   }
 
-  // Build rich page content (children blocks)
-  const children = [];
-
-  // Add profile photo as a prominent clickable link in the page content.
-  // Note: Direct embedding of LinkedIn images often fails in Notion due to hotlink protection.
-  // The URL below lets the user open the photo in a new tab.
-  if (profile.profilePictureUrl) {
-    children.push(headingBlock('Profile Photo'));
-    children.push(paragraphWithLink('View LinkedIn profile photo (opens in new tab)', profile.profilePictureUrl));
-    children.push(paragraphBlock(`Direct URL: ${profile.profilePictureUrl}`));
-  }
-
-  // Add source link as a paragraph at the end
-  if (profile.profileUrl) {
-    children.push(paragraphBlock(`Source: ${profile.profileUrl}`));
-  }
-
   return {
     parent: { database_id: profile.databaseId || '' }, // Will be overridden by caller
-    properties,
-    children: children.length > 0 ? children : undefined
+    properties
   };
 }
 
