@@ -2,9 +2,9 @@
   "manifest_version": 3,
   "name": "LinkedIn to Notion",
   "version": "1.1.0",
-  "description": "Save LinkedIn profiles to your Notion database with one click. Extracts name, headline, company, location, about, and experience.",
+  "description": "Save LinkedIn profiles and company pages to your Notion database with one click, with optional AI correction via xAI Grok.",
   "author": "linkedin-notion-extension",
-  "homepage_url": "https://github.com/yourname/linkedin-notion-extension",
+  "homepage_url": "https://github.com/Scott-A-Phillips/ProfileSaver",
   "permissions": [
     "storage"
   ],
