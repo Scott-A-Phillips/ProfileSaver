@@ -554,8 +554,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           sendResponse({ success: false, error: 'No active tab found' });
           return;
         }
-        if (!/linkedin\.com\/in\//.test(tab.url || '')) {
-          sendResponse({ success: false, error: 'Active tab is not a LinkedIn profile page' });
+        if (!/linkedin\.com\/(in|company)\//.test(tab.url || '')) {
+          sendResponse({ success: false, error: 'Active tab is not a LinkedIn profile or company page' });
           return;
         }
         const responseFromContent = await chrome.tabs.sendMessage(tab.id, { action: message.action });

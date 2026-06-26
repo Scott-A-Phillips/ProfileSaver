@@ -1,7 +1,7 @@
 /**
  * LinkedIn to Notion - Content Script
- * Runs on linkedin.com/in/* pages.
- * - Detects profile pages
+ * Runs on linkedin.com/* pages.
+ * - Detects profile and company pages
  * - Extracts structured data (name, headline, company, location, about, experience)
  * - Injects a "Save to Notion" button (floating + attempts native placement)
  * - Shows success/error toasts
@@ -75,6 +75,11 @@
 
   function extractProfileData() {
     const url = window.location.href.split('?')[0];
+
+    // Route company pages to their own extractor
+    if (url.includes('linkedin.com/company/')) {
+      return extractCompanyData();
+    }
 
     // NAME - LinkedIn changes the DOM frequently; be very defensive here.
     // We try reliable sources (title + meta) first because h1 selectors are fragile.
@@ -1101,17 +1106,158 @@
     return profile;
   }
 
+  /* ----------------------- Company page extraction ----------------------- */
+
+  function extractCompanyData() {
+    const url = window.location.href.split('?')[0];
+
+    let companyName = queryText([
+      '.org-top-card-primary-phone__title',
+      '.org-top-card-summary__title',
+      '.org-top-card-summary-info__title',
+      '[data-test-id="company-name"]',
+      'h1.org-top-card-title',
+      '.org-top-card__primary-phone h1',
+      'h1'
+    ], 200);
+
+    if (!companyName || companyName.length < 2) {
+      try {
+        const title = document.title || '';
+        const clean = title.replace(/\s*[|-]\s*LinkedIn.*$/i, '').trim();
+        if (clean && clean.length > 2 && clean.length < 100) {
+          companyName = cleanText(clean.split(/\s*[-|]\s*/)[0]);
+        }
+      } catch (_) {}
+    }
+
+    let tagline = queryText([
+      '.org-top-card-summary__tagline',
+      '.org-top-card__tagline',
+      '[data-test-id="company-tagline"]',
+      '.org-top-card-summary-info__tagline'
+    ], 500);
+
+    let about = queryText([
+      '#about ~ * .break-words',
+      '[data-test-id="about-section"] p',
+      '.org-about-company-module__description p'
+    ], 2500);
+
+    let location = queryText([
+      '[data-test-id="company-location"]',
+      '.org-top-card-summary-info__location',
+      '.org-about-company-module__headquarters'
+    ], 200);
+
+    let logoUrl = '';
+    try {
+      // Multi-tier logo extraction (same approach as profile photo)
+      let logo = null;
+
+      // Tier 1: Specific company logo containers
+      const logoSels = [
+        '.org-top-card-primary-phone__logo img',
+        '.org-top-card-summary__logo img',
+        '.org-top-card__logo img',
+        'img[data-test-id="company-logo"]',
+        '.org-about-company-module__company-logo img',
+        '.org-top-card__profile-photo img',
+        '.org-top-card__image img'
+      ];
+      for (const sel of logoSels) {
+        const el = document.querySelector(sel);
+        if (el) { logo = el; break; }
+      }
+
+      // Tier 2: Top card area — find LinkedIn CDN images that look like logos
+      if (!logo) {
+        const topCard = document.querySelector(
+          '.org-top-card, ' +
+          '.org-top-card-primary-phone, ' +
+          '[data-test-id="company-top-card"], ' +
+          '.scaffold-layout-top-card, ' +
+          'main'
+        );
+        if (topCard) {
+          const candidates = topCard.querySelectorAll('img[src*="licdn.com"], img[src*="media.licdn"]');
+          for (const candidate of candidates) {
+            const alt = (candidate.getAttribute('alt') || '').toLowerCase();
+            if (alt.includes('logo') || (companyName && alt.includes(companyName.toLowerCase().slice(0, 10)))) {
+              logo = candidate;
+              break;
+            }
+          }
+          if (!logo && candidates.length > 0) {
+            // First LinkedIn CDN image in the top card is almost always the logo
+            logo = candidates[0];
+          }
+        }
+      }
+
+      // Tier 3: Broad scan — any img with the company name in alt text
+      if (!logo) {
+        const allImgs = document.querySelectorAll('img[alt*="logo"], img[alt*="Logo"]');
+        for (const candidate of allImgs) {
+          const src = candidate.getAttribute('src') || candidate.getAttribute('data-src') || '';
+          if (src.includes('licdn.com') || src.includes('media.licdn')) {
+            logo = candidate;
+            break;
+          }
+        }
+      }
+
+      if (logo) {
+        // Prefer srcset for the highest resolution
+        let src = logo.getAttribute('src') || logo.getAttribute('data-src') || '';
+        const srcset = logo.getAttribute('srcset');
+        if (srcset) {
+          const entries = srcset.split(',').map(s => s.trim());
+          let largest = '';
+          let largestW = 0;
+          for (const entry of entries) {
+            const [url, size] = entry.split(/\s+/);
+            const w = size ? parseInt(size) : 0;
+            if (w > largestW && url && url.startsWith('http')) {
+              largestW = w;
+              largest = url;
+            }
+          }
+          if (largest) src = largest;
+        }
+        if (src && src.startsWith('https://')) {
+          logoUrl = src;
+        }
+      }
+    } catch (_) {}
+
+    const profile = {
+      fullName: cleanText(companyName) || 'LinkedIn Company',
+      headline: '',
+      currentCompany: cleanText(companyName) || '',
+      location: cleanText(location),
+      profileUrl: url,
+      profilePictureUrl: logoUrl,
+      profilePictureDebug: null,
+      about: cleanText(about) || cleanText(tagline),
+      experience: [],
+      savedAt: new Date().toISOString()
+    };
+
+    lastExtracted = profile;
+    return profile;
+  }
 
   function looksLikeRealProfile() {
     const url = location.href;
 
-    // The manifest restricts this script to linkedin.com/in/* pages.
-    if (url.includes('linkedin.com/in/')) {
+    // The manifest restricts this script to linkedin.com/* pages.
+    if (url.includes('linkedin.com/in/') || url.includes('linkedin.com/company/')) {
       return true;
     }
 
     // Last-resort broad DOM check (covers some edge SPA render states)
-    if (document.querySelector('h1, main, .scaffold-layout, .pv-top-card')) {
+    if (document.querySelector('h1, main, .scaffold-layout, .pv-top-card, .org-top-card')) {
       return true;
     }
 
@@ -1654,7 +1800,7 @@
     }
 
     const url = window.location.href;
-    if (!/linkedin\.com\/in\//.test(url)) return;
+    if (!/linkedin\.com\/(in|company)\//.test(url)) return;
 
     // Ultra-early + staggered retries to beat LinkedIn's heavy React rendering
     setTimeout(() => {
