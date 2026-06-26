@@ -1,154 +1,119 @@
-<<<<<<< HEAD
-# ProfileSaver
-Chrome extension for saving social media profiles into to a Notion database 
-=======
-# LinkedIn to Notion Chrome Extension
+# LinkedIn → Notion Chrome Extension
 
-A clean, modern Manifest V3 Chrome extension that lets you save LinkedIn profiles to a Notion database with one click.
+Save LinkedIn profiles (and company pages) to a Notion database with one click.
 
 ## Features
 
-- Detects LinkedIn profile pages (`/in/*`) and injects a **"Save to Notion"** button (floating + native placement attempts).
-- Extracts: full name, headline, current company, location, LinkedIn URL, about summary, and experience highlights.
-- Creates a rich Notion page inside your chosen database with:
-  - Structured properties (Name, Headline, Company, Location, Profile URL, About, Experience)
-  - Formatted page content (headings + paragraphs + bullet list for experience)
-- Popup UI for securely storing your Notion Integration Token + Database ID.
-- "Test Connection" button to validate credentials and database access.
-- Proper error messages, loading states, and dismissible toasts.
-- SPA-friendly (works with LinkedIn's client-side navigation).
+- **Profiles** — extracts name, job title, organisation, location, about, profile photo
+- **Company pages** — extracts company name, tagline, logo, location
+- **AI correction** — optionally use xAI Grok to fix misidentified job titles and company names
+- **Custom property mapping** — map extracted fields to any Notion column names
+- **Profile photo as page icon** — sets the LinkedIn photo/logo as the Notion page icon
+- SPA-friendly (works with LinkedIn's client-side navigation)
 
-## Project Structure
+## Installation
 
-```
-linkedin-notion-extension/
-├── manifest.json
-├── background.js          # Service worker – Notion API calls & credential storage
-├── content.js             # Injected on profile pages – extraction + button + toasts
-├── content.css
-├── popup/
-│   ├── popup.html
-│   ├── popup.js
-│   └── popup.css
-├── icons/
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-├── README.md
-└── .gitignore
-```
-
-## Installation (Load Unpacked)
-
-1. Clone or download this folder.
+1. Clone or download this repo.
 2. Open Chrome → `chrome://extensions`
 3. Enable **Developer mode** (top right).
-4. Click **Load unpacked** and select the `linkedin-notion-extension` folder.
+4. Click **Load unpacked** and select the folder.
 5. Pin the extension if desired.
 
-## Notion Setup (Required)
+## Notion Setup
 
 ### 1. Create an Internal Integration
-1. Go to [https://www.notion.so/my-integrations](https://www.notion.so/my-integrations).
-2. Click **+ New integration**.
-3. Name it (e.g., "LinkedIn Profile Saver"), choose your workspace, and click **Submit**.
-4. On the next screen, copy the **Internal Integration Token** (starts with `ntn_`).
 
-### 2. Create / Prepare a Database
-Recommended property names and types (the extension sends these keys):
+1. Go to [notion.so/my-integrations](https://www.notion.so/my-integrations).
+2. Click **+ New integration**, name it (e.g. "LinkedIn Saver"), pick your workspace, submit.
+3. Copy the **Internal Integration Token** (starts with `ntn_`).
 
-| Property Name   | Type          | Notes                              |
-|-----------------|---------------|------------------------------------|
-| Name            | Title         | Required by Notion                 |
-| Headline        | Rich Text     |                                    |
-| Company         | Rich Text     |                                    |
-| Location        | Rich Text     |                                    |
-| Profile URL     | URL           |                                    |
-| About           | Rich Text     | Long text is fine (also added to page body) |
-| Experience      | Rich Text     | Highlights joined with bullets     |
+### 2. Create a Database with These Properties
 
-You can name them differently — just remember to update `background.js` if you change the keys.
+| Column Name   | Type      | Example Value          |
+|---------------|-----------|------------------------|
+| Name          | Title     | Dwight Lazarus         |
+| Job Title     | Rich Text | Director at Spotify    |
+| Organisation  | Rich Text | Spotify                |
+| LinkedIn      | URL       | https://linkedin.com/... |
+| Profile Photo | URL or Files & media | (photo URL) |
 
-### 3. Share the Database with Your Integration
+You can use **any column names you like** — configure them in the extension popup under Advanced: Custom Property Names.
+
+### 3. Share the Database
+
 1. Open the database in Notion.
-2. Click the **⋯** menu → **Connections**.
-3. Find and select your integration (it must have "Insert content" permissions).
+2. Click **⋯** → **Connections** → add your integration.
 
 ### 4. Get the Database ID
-Open the database in your browser. The URL looks like:
+
+Open the database in your browser. The URL has a 32-character hex string after the workspace name:
 
 ```
 https://www.notion.so/workspace/0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d?v=...
 ```
 
-The long hex string (`0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d`) **is** your Database ID. Copy it.
+That hex string is your **Database ID**.
 
-### 5. Configure the Extension
-1. Click the extension icon → popup opens.
-2. Paste the **token** and **Database ID**.
-3. Click **Save Settings**.
-4. Click **Test Connection** — you should see a success message with the database title.
+## Configuration
+
+1. Click the extension icon.
+2. Expand **🔑 API Settings** and paste your:
+   - Notion Integration Token
+   - Database ID
+3. Click **Save Settings**, then **Test Connection**.
+
+Optional — expand **🔧 Advanced: Custom Property Names** if your database uses different column names than the defaults.
+
+### AI Correction (Optional)
+
+1. Get an xAI API key from [console.x.ai](https://console.x.ai).
+2. Paste it into the **xAI API Key** field in API Settings and save.
+3. On each save, Grok will correct misidentified job titles and company names before writing to Notion.
 
 ## Usage
 
-1. Navigate to any LinkedIn profile (`linkedin.com/in/...`).
-2. After the page settles, a blue **"Save to Notion"** button appears (bottom-right or inside the profile actions).
-3. Click it.
-4. Watch the toast notifications. On success you’ll get a quick link to open the new Notion page.
-
-The saved page will contain:
-- All extracted fields as database properties
-- A nicely formatted "About" section + "Experience Highlights" with bullets
+- Open a LinkedIn profile (`linkedin.com/in/...`) or company page (`linkedin.com/company/...`).
+- A blue **Save to Notion** button appears (bottom-right or in the profile actions area).
+- Click it. Success/failure toasts appear.
+- For profiles with an xAI key configured, Grok corrects the extraction before saving.
 
 ## Troubleshooting
 
-**"Notion token missing" or 401/403 errors**
-- Re-check that you copied the full `ntn_...` token.
-- Verify the integration was invited to the specific database (not just the workspace).
-
-**"Database not found" or 404**
-- Make sure you copied the correct Database ID (32 hex chars).
-- For very new databases using the 2025+ multi-source model, you may need the **Data Source ID** instead of the classic Database ID. You can get it via the Notion API or by inspecting the page.
-
 **Button doesn't appear**
-- Hard refresh the LinkedIn profile (`Ctrl+Shift+R`).
-- Make sure you're on a real `/in/username` page (not company pages or feed).
-- Toggle the extension off/on in `chrome://extensions`.
+- Refresh the page. LinkedIn is a heavy SPA; the button may take a few seconds.
+- Make sure you're on a real profile (`/in/username`) or company (`/company/name`) page.
 
-**Properties not matching / bad request 400**
-- The first time you save, the extension expects the property names listed above (or you can edit `background.js` → `buildNotionPayload`).
-- After changing your database schema, test the connection again.
+**Save fails with 400**
+- Your property names don't match the database. Click **Test Connection** in the popup to see which columns are missing, then fix the Advanced Property Names.
 
-**Rate limits**
-- Notion has generous but real limits. Wait 30–60 seconds if you hit 429.
+**401 / 403**
+- The token is wrong or the integration hasn't been invited to the specific database.
 
-## Development Notes
+**AI Correction not working**
+- Verify your xAI key is saved in API Settings.
+- Check the console (`Ctrl+Shift+J`) for `[LinkedIn→Notion] Grok` messages.
 
-- Pure vanilla JS — no build step required.
-- All Notion API calls happen in the service worker (`background.js`) for security.
-- Credentials are stored in `chrome.storage.local` (never synced, never leaves your machine).
-- Content script uses defensive, multi-selector extraction because LinkedIn frequently changes DOM classes.
-- To update the Notion API version, edit `NOTION_VERSION` in `background.js`.
+## Project Structure
 
-## Privacy & Security
+```
+├── manifest.json       # Extension manifest (MV3)
+├── background.js       # Service worker — Notion API, Grok, credential storage
+├── content.js          # Injected on LinkedIn pages — extraction, button, toasts
+├── content.css         # Button/toast styles
+├── popup/
+│   ├── popup.html      # Settings UI
+│   ├── popup.js        # Popup logic
+│   └── popup.css       # Popup styles
+├── icons/              # Extension icons
+└── README.md
+```
 
-- Your Notion token and Database ID live only in your browser's local storage.
-- The extension never phones home.
-- Only communicates with `api.notion.com` and the page you are viewing.
+## Privacy
 
-## Roadmap / Ideas for Future Versions
-
-- Option to update existing page instead of always creating new (dedup by Profile URL).
-- Support for saving posts / articles in addition to profiles.
-- Custom property mapping UI.
-- Export saved profiles as CSV/JSON.
-- Dark mode for popup.
+- Your Notion token, Database ID, and xAI key are stored only in `chrome.storage.local` (never synced, never sent anywhere).
+- The extension communicates only with `api.notion.com` and `api.x.ai` (if configured).
+- No analytics, no telemetry, no third-party servers.
 
 ## License
 
-MIT — feel free to fork, improve, and redistribute.
-
----
-
-Made for people who want their LinkedIn network in their own second brain.
->>>>>>> f76180e (Initial commit: Stable photo extraction + golden profile corpus)
+MIT
