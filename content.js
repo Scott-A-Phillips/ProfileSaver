@@ -251,11 +251,11 @@
                              !/\b(team|project|event|festival|diwali|hackathon|teamified|services?)\b/i.test(line) &&
                              !line.includes('http') && !line.includes('www.') && !/skill|top skill/i.test(line) &&
                              !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line) &&
-               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line) &&
-               !/^[-•]\s/.test(line);
+               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line);
 
               if (isRole && !headline) {
-                headline = line;
+                // Strip leading bullet markers from role text
+                headline = line.replace(/^[-•]\s+/, '').trim();
 
                 // Pair with the company line that follows this role (most reliable)
                 for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
@@ -379,11 +379,11 @@
                            !/\b(team|project|event|festival|diwali|hackathon|teamified|services?)\b/i.test(line) &&
                            !line.includes('http') && !line.includes('www.') && !/skill|top skill/i.test(line) &&
                            !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line) &&
-               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line) &&
-               !/^[-•]\s/.test(line);
+               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line);
 
             if (isRole && !headline) {
-              headline = line;
+              // Strip leading bullet markers from role text
+              headline = line.replace(/^[-•]\s+/, '').trim();
 
               // Pair with the company line that follows this role (most reliable)
               for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
