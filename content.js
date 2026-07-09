@@ -75,6 +75,7 @@ console.log('[LinkedIn→Notion] Content script loaded');
   /* ----------------------- Profile data extraction ----------------------- */
 
   function extractProfileData() {
+    console.log('[LinkedIn→Notion] extractProfileData called');
     const url = window.location.href.split('?')[0];
 
     // Route company pages to their own extractor
@@ -1165,7 +1166,12 @@ console.log('[LinkedIn→Notion] Content script loaded');
       profilePictureDebug: photoDebug,   // only used by Debug → Preview tool
       about: cleanText(about),
       experience: experience.slice(0, 6),
-      savedAt: new Date().toISOString()
+      savedAt: new Date().toISOString(),
+      _debug: {
+        firstExpFound: !!firstExp,
+        firstExpTag: firstExp ? firstExp.tagName : null,
+        headlineSource: headline ? (document.querySelector('.pv-top-card__headline') ? 'top-card' : 'experience') : 'empty'
+      }
     };
 
     lastExtracted = profile;

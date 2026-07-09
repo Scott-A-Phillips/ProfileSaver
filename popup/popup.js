@@ -370,6 +370,7 @@ function setupDebugTools() {
           <div><strong>Job Title:</strong> ${escapeHtml(p.headline || '(empty)')}</div>
           <div><strong>Organisation:</strong> ${escapeHtml(p.currentCompany || '(empty)')}</div>
           ${photoHtml}
+          ${p._debug ? `<div style="margin-top:4px; font-size:10px; color:#888;"><strong>Debug:</strong> firstExp=${p._debug.firstExpFound}, tag=${p._debug.firstExpTag}, headlineSource=${p._debug.headlineSource}</div>` : ''}
           <div style="margin-top:6px; font-size:11px; color:#666;">
             Extracted via current logic. Add a golden profile + improve strategies for better reliability.
           </div>
