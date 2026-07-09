@@ -1,0 +1,33 @@
+{
+  "id": "peter-kappes-cover-photo-edge-case-2026-06-01",
+  "url": "https://www.linkedin.com/in/peterkappes/",
+  "capturedAt": "2026-06-01T09:55:24.806Z",
+  "documentTitle": "Peter Kappes | LinkedIn",
+  "groundTruth": {
+    "name": "Peter Kappes",
+    "jobTitle": "Business Owner",
+    "organisation": "Bots n' Beans"
+  },
+  "raw": {
+    "topCard": {
+      "text": ""
+    },
+    "firstExperienceCard": {
+      "lines": [],
+      "structuralHints": {}
+    },
+    "experienceSectionText": "Experience Business Owner Bots n' Beans Nov 2024 - Present · 1 yr 8 mos Eagle, Idaho, United States Driving Innovation. Business Owner Builder's Film Studio Jan 2022 - Present · 4 yrs 6 mos Eagle, Idaho, United States · On-site Video-First Revenue Engine for Robotics & Construction Tech Strategic digital GTM that delivers pipeline, not just content. We create high-converting content for: ▶ Robotics/Automation firms scaling commercially ▶ Construction Tech companies launching innovation How: ▶ Digital GTM - Funnels that convert ▶ Organic Domination - Video content that builds search authority ▶ Deal-Closing Content - Video/web/CRM tools Let’s turn your tech into revenue. … more Robotics, Construction and +6 skills Business Owner Treasure Idaho Jan 2023 - Present · 3 yrs 6 mos Eagle, Idaho, United States · Remote Real Estate, Entrepreneurship and +4 skills Head of Marketing House of Design Robotics · Full-time May 2017 - Sep 2024 · 7 yrs 5 mos Boise Metropolitan Area · Hybrid +8 Robotics, Digital Marketing Strategy and +11 skills Construction Documentation Ark Encounter Sep 2015 - Jan 2017 · 1 yr 5 mos Williamstown, Ky · On-site Filmed, photographed and edited the construction of the Ark Encounter and the design process. +2 Video Production, Post Production and +3 skills Show all",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D5603AQGBCb89XGsSIQ/profile-displayphoto-crop_800_800/B56Z4FoZ8cGoAI-/0/1778210942446?e=1781740800&v=beta&t=ORrMVfZX6H9DOiPGXHgjHnrnYIGOBrwEqkH-xmWbd7M"
+  },
+  "extractionAtCapture": {
+    "name": "Peter Kappes",
+    "jobTitle": "Business Owner",
+    "organisation": "Bots n' Beans",
+    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D5603AQGBCb89XGsSIQ/profile-displayphoto-crop_800_800/B56Z4FoZ8cGoAI-/0/1778210942446?e=1781740800&v=beta&t=ORrMVfZX6H9DOiPGXHgjHnrnYIGOBrwEqkH-xmWbd7M",
+    "sources": {
+      "jobTitle": "current-extractor",
+      "organisation": "current-extractor"
+    }
+  },
+  "notes": "Edge case where the person-SVG figure contained both the real headshot and the cover/background image. Previous logic incorrectly selected the background image (alt='Cover photo' and URL contained 'displaybackgroundimage'). This profile validates the hardening added to strongly reject background/cover images inside the person-SVG figure and across all tiers. The correct headshot uses image hash D5603AQGBCb89XGsSIQ."
+}

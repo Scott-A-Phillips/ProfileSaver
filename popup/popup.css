@@ -225,15 +225,11 @@ body {
 /* Help / Instructions */
 .help-section {
   margin-top: 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  padding: 2px 0;
 }
 
 .help-section summary {
   cursor: pointer;
-  padding: 9px 13px;
+  padding: 8px 0;
   font-weight: 600;
   font-size: 13px;
   color: #334155;
@@ -242,7 +238,6 @@ body {
 }
 
 .help-section[open] summary {
-  border-bottom: 1px solid var(--border);
   margin-bottom: 4px;
 }
 
@@ -322,15 +317,11 @@ body {
 /* Advanced property mapping */
 .advanced-section {
   margin-top: 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  padding: 2px 0;
 }
 
 .advanced-section summary {
   cursor: pointer;
-  padding: 9px 13px;
+  padding: 8px 0;
   font-weight: 600;
   font-size: 13px;
   color: #334155;

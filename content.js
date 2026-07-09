@@ -1739,9 +1739,11 @@ console.log('[LinkedIn→Notion] Content script loaded');
       }
 
       // Send to background worker (has the Notion token)
+      const pageText = (document.body?.innerText || document.body?.textContent || '').slice(0, 8000);
       const response = await chrome.runtime.sendMessage({
         action: 'SAVE_PROFILE',
-        profile
+        profile,
+        pageText
       });
 
       if (response && response.success) {

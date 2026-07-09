@@ -492,68 +492,64 @@ async function testNotionConnection(databaseIdOverride, mapOverride = null) {
 }
 
 /**
+ * Call Grok API to correct extracted profile data. Returns corrected profile or null.
+ */
+async function correctProfileWithGrok(profile, pageText) {
+  try {
+    const { xaiApiKey } = await getCredentials();
+    if (!xaiApiKey) return null;
+
+    const system = 'You are an assistant that corrects LinkedIn profile data extraction. Given the raw page content and the extraction results, fix any errors. Rules:\n1. "name" = the person\'s full name\n2. "headline" = ONLY the single most current/recent job title (e.g. "Service Architect"). Keep it short (under 80 chars). Do NOT concatenate multiple roles or list descriptions.\n3. "organisation" = the company name for that current role (e.g. "Government ICT Centre Valtori")\nRespond ONLY with a JSON object: {name, headline, organisation}. Use empty strings for unknown fields.';
+
+    const userMsg = `Raw page content:\n${(pageText || '').slice(0, 6000)}\n\nCurrent extraction:\nName: ${profile.fullName || ''}\nJob Title: ${profile.headline || ''}\nOrganisation: ${profile.currentCompany || ''}\n\nCorrect the extraction based on the raw page content. Respond with only JSON.`;
+
+    const resp = await fetch('https://api.x.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${xaiApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'grok-4.3',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: userMsg }
+        ],
+        temperature: 0.1,
+        max_tokens: 300
+      })
+    });
+
+    if (!resp.ok) return null;
+
+    const data = await resp.json();
+    const raw = data?.choices?.[0]?.message?.content || '';
+    const jsonMatch = raw.match(/\{.*\}/s);
+    if (!jsonMatch) return null;
+
+    const corrected = JSON.parse(jsonMatch[0]);
+    return {
+      fullName: corrected.name || '',
+      headline: corrected.headline || '',
+      currentCompany: corrected.organisation || ''
+    };
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
  * Message handler from content script and popup.
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // --- Grok AI correction ---
+  // --- Grok AI correction (manual from popup preview) ---
   if (message.action === 'CORRECT_WITH_GROK') {
     (async () => {
-      try {
-        const { xaiApiKey } = await getCredentials();
-        if (!xaiApiKey) {
-          sendResponse({ success: false, error: 'No xAI API key saved. Add it in the extension popup.' });
-          return;
-        }
-
-        const { profile, pageText } = message;
-
-        const system = 'You are an assistant that corrects LinkedIn profile data extraction. Given the raw page content and the extraction results, fix any errors. Rules:\n1. "name" = the person\'s full name\n2. "headline" = ONLY the single most current/recent job title (e.g. "Service Architect"). Keep it short (under 80 chars). Do NOT concatenate multiple roles or list descriptions.\n3. "organisation" = the company name for that current role (e.g. "Government ICT Centre Valtori")\nRespond ONLY with a JSON object: {name, headline, organisation}. Use empty strings for unknown fields.';
-
-        const userMsg = `Raw page content:\n${(pageText || '').slice(0, 6000)}\n\nCurrent extraction:\nName: ${profile.fullName || ''}\nJob Title: ${profile.headline || ''}\nOrganisation: ${profile.currentCompany || ''}\n\nCorrect the extraction based on the raw page content. Respond with only JSON.`;
-
-        const resp = await fetch('https://api.x.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${xaiApiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'grok-4.3',
-            messages: [
-              { role: 'system', content: system },
-              { role: 'user', content: userMsg }
-            ],
-            temperature: 0.1,
-            max_tokens: 300
-          })
-        });
-
-        if (!resp.ok) {
-          const errText = await resp.text();
-          sendResponse({ success: false, error: `xAI API error (${resp.status}): ${errText}` });
-          return;
-        }
-
-        const data = await resp.json();
-        const raw = data?.choices?.[0]?.message?.content || '';
-        const jsonMatch = raw.match(/\{.*\}/s);
-        if (!jsonMatch) {
-          sendResponse({ success: false, error: 'Grok did not return valid JSON', raw });
-          return;
-        }
-
-        const corrected = JSON.parse(jsonMatch[0]);
-        sendResponse({
-          success: true,
-          corrected: {
-            fullName: corrected.name || '',
-            headline: corrected.headline || '',
-            currentCompany: corrected.organisation || ''
-          },
-          raw
-        });
-      } catch (err) {
-        sendResponse({ success: false, error: err.message });
+      const corrected = await correctProfileWithGrok(message.profile, message.pageText);
+      if (corrected) {
+        sendResponse({ success: true, corrected });
+      } else {
+        sendResponse({ success: false, error: 'Grok correction failed. Check your xAI API key and model availability.' });
       }
     })();
     return true;
@@ -561,7 +557,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'SAVE_PROFILE') {
     (async () => {
-      const result = await createNotionPage(message.profile);
+      let profile = message.profile;
+      // Auto-correct with Grok if xAI key is configured
+      const corrected = await correctProfileWithGrok(profile, message.pageText);
+      if (corrected) {
+        profile = { ...profile, ...corrected };
+      }
+      const result = await createNotionPage(profile);
       sendResponse(result);
     })();
     return true; // keep channel open for async
