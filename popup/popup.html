@@ -68,6 +68,18 @@
           </label>
           <p class="hint" style="margin-top: 4px;">This sets the photo as the page icon (visible in database views and page header). Works with external image URLs.</p>
         </div>
+
+        <div class="field" style="margin-top: 16px;">
+          <label for="xai-key">xAI API Key <span style="font-weight:400;color:#666;">(optional — for Grok correction)</span></label>
+          <input
+            type="password"
+            id="xai-key"
+            placeholder="xai-••••••••••••••••••••••••••••••••"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <p class="hint">Get one at <a href="https://console.x.ai" target="_blank">console.x.ai</a>. Grok improves reliability of Job Title &amp; Organisation extraction.</p>
+        </div>
       </div>
 
       <!-- Advanced Property Mapping -->
@@ -130,6 +142,10 @@
           <h4>Current Extraction Result</h4>
           <div id="preview-output" class="debug-output"></div>
           <div id="preview-status" class="hint" style="margin-top: 4px;"></div>
+          <div style="margin-top: 8px;">
+            <button id="grok-correct-btn" class="btn btn-primary" style="font-size: 12px; display: none;">Correct with Grok</button>
+            <div id="grok-results" class="debug-output" style="margin-top: 6px; display: none;"></div>
+          </div>
         </div>
 
         <!-- Golden Profile Comparison (mismatch highlighting) -->
@@ -164,7 +180,7 @@
     <!-- Footer -->
     <div class="popup-footer">
       <div class="footer-links">
-        <span class="version">v1.0.0</span>
+        <span class="version">v1.2.0</span>
         <a href="https://developers.notion.com/docs" target="_blank">Notion API Docs</a>
       </div>
       <p class="disclaimer">Your token is stored locally in your browser only. Never shared.</p>

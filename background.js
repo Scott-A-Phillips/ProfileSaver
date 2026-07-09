@@ -10,17 +10,19 @@ const NOTION_VERSION = '2022-06-28'; // Stable, widely supported. Update if need
  * Retrieve stored Notion credentials and property mapping.
  */
 async function getCredentials() {
-  const { notionToken, databaseId, propertyMap, useProfilePhotoAsIcon } = await chrome.storage.local.get([
+  const { notionToken, databaseId, propertyMap, useProfilePhotoAsIcon, xaiApiKey } = await chrome.storage.local.get([
     'notionToken', 
     'databaseId', 
     'propertyMap',
-    'useProfilePhotoAsIcon'
+    'useProfilePhotoAsIcon',
+    'xaiApiKey'
   ]);
   return { 
     notionToken, 
     databaseId,
     propertyMap: propertyMap || getDefaultPropertyMap(),
-    useProfilePhotoAsIcon: useProfilePhotoAsIcon !== false   // default true
+    useProfilePhotoAsIcon: useProfilePhotoAsIcon !== false,
+    xaiApiKey
   };
 }
 
@@ -493,6 +495,70 @@ async function testNotionConnection(databaseIdOverride, mapOverride = null) {
  * Message handler from content script and popup.
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // --- Grok AI correction ---
+  if (message.action === 'CORRECT_WITH_GROK') {
+    (async () => {
+      try {
+        const { xaiApiKey } = await getCredentials();
+        if (!xaiApiKey) {
+          sendResponse({ success: false, error: 'No xAI API key saved. Add it in the extension popup.' });
+          return;
+        }
+
+        const { profile, pageText } = message;
+
+        const system = 'You are an assistant that corrects LinkedIn profile data extraction. Given the raw page content and the extraction results, fix any errors in the extracted fields. Respond ONLY with a JSON object containing: name (string), headline (string), organisation (string). Use empty strings for unknown fields.';
+
+        const userMsg = `Raw page content:\n${(pageText || '').slice(0, 6000)}\n\nCurrent extraction:\nName: ${profile.fullName || ''}\nJob Title: ${profile.headline || ''}\nOrganisation: ${profile.currentCompany || ''}\n\nCorrect the extraction based on the raw page content. Respond with only JSON.`;
+
+        const resp = await fetch('https://api.x.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${xaiApiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'grok-2-latest',
+            messages: [
+              { role: 'system', content: system },
+              { role: 'user', content: userMsg }
+            ],
+            temperature: 0.1,
+            max_tokens: 300
+          })
+        });
+
+        if (!resp.ok) {
+          const errText = await resp.text();
+          sendResponse({ success: false, error: `xAI API error (${resp.status}): ${errText}` });
+          return;
+        }
+
+        const data = await resp.json();
+        const raw = data?.choices?.[0]?.message?.content || '';
+        const jsonMatch = raw.match(/\{.*\}/s);
+        if (!jsonMatch) {
+          sendResponse({ success: false, error: 'Grok did not return valid JSON', raw });
+          return;
+        }
+
+        const corrected = JSON.parse(jsonMatch[0]);
+        sendResponse({
+          success: true,
+          corrected: {
+            fullName: corrected.name || '',
+            headline: corrected.headline || '',
+            currentCompany: corrected.organisation || ''
+          },
+          raw
+        });
+      } catch (err) {
+        sendResponse({ success: false, error: err.message });
+      }
+    })();
+    return true;
+  }
+
   if (message.action === 'SAVE_PROFILE') {
     (async () => {
       const result = await createNotionPage(message.profile);
@@ -519,7 +585,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'SAVE_SETTINGS') {
     (async () => {
-      const { token, databaseId, propertyMap, useProfilePhotoAsIcon } = message;
+      const { token, databaseId, propertyMap, useProfilePhotoAsIcon, xaiApiKey } = message;
       const toSave = {
         notionToken: (token || '').trim(),
         databaseId: (databaseId || '').trim()
@@ -530,6 +596,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (typeof useProfilePhotoAsIcon === 'boolean') {
         toSave.useProfilePhotoAsIcon = useProfilePhotoAsIcon;
       }
+      if (typeof xaiApiKey === 'string') {
+        toSave.xaiApiKey = xaiApiKey.trim() || '';
+      }
       await chrome.storage.local.set(toSave);
       sendResponse({ success: true });
     })();
@@ -538,7 +607,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === 'CLEAR_SETTINGS') {
     (async () => {
-      await chrome.storage.local.remove(['notionToken', 'databaseId', 'useProfilePhotoAsIcon']);
+      await chrome.storage.local.remove(['notionToken', 'databaseId', 'useProfilePhotoAsIcon', 'xaiApiKey']);
       sendResponse({ success: true });
     })();
     return true;

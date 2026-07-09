@@ -31,6 +31,7 @@ async function loadCurrentSettings() {
     if (res && res.success) {
       if (res.notionToken) $('notion-token').value = res.notionToken;
       if (res.databaseId) $('database-id').value = res.databaseId;
+      if (res.xaiApiKey) $('xai-key').value = res.xaiApiKey;
 
       // Load custom property map or use defaults
       const map = res.propertyMap || {};
@@ -52,6 +53,7 @@ async function loadCurrentSettings() {
 async function saveSettings() {
   const token = $('notion-token').value.trim();
   const databaseId = $('database-id').value.trim();
+  const xaiApiKey = $('xai-key').value.trim();
 
   if (!token) {
     showStatus('Please enter your Notion Integration Token.', true);
@@ -78,7 +80,8 @@ async function saveSettings() {
       token,
       databaseId,
       propertyMap,
-      useProfilePhotoAsIcon
+      useProfilePhotoAsIcon,
+      xaiApiKey
     });
 
     if (res && res.success) {
@@ -164,6 +167,7 @@ async function clearSettings() {
     await chrome.runtime.sendMessage({ action: 'CLEAR_SETTINGS' });
     $('notion-token').value = '';
     $('database-id').value = '';
+    $('xai-key').value = '';
     $('use-photo-as-icon').checked = true; // reset to default
     showStatus('Credentials cleared from this browser.');
   } catch (err) {
@@ -340,6 +344,7 @@ function setupDebugTools() {
         }
 
         const p = res.profile || {};
+        const pageText = res.pageText || '';
         let photoHtml = '';
         if (p.profilePictureUrl) {
           photoHtml = `
@@ -370,7 +375,7 @@ function setupDebugTools() {
           <div><strong>Job Title:</strong> ${escapeHtml(p.headline || '(empty)')}</div>
           <div><strong>Organisation:</strong> ${escapeHtml(p.currentCompany || '(empty)')}</div>
           ${photoHtml}
-          ${p._debug ? `<div style="margin-top:4px; font-size:10px; color:#888;"><strong>Debug:</strong> firstExp=${p._debug.firstExpFound}, tag=${p._debug.firstExpTag}, headlineSource=${p._debug.headlineSource}</div>` : ''}
+          ${p._debug ? `<div style="margin-top:4px; font-size:10px; color:#888;"><strong>Debug:</strong> firstExp=${p._debug.firstExpFound}, tag=${p._debug.firstExpTag}, headlineSource=${p._debug.headlineSource}, companySource=${p._debug.companySource}</div>` : ''}
           <div style="margin-top:6px; font-size:11px; color:#666;">
             Extracted via current logic. Add a golden profile + improve strategies for better reliability.
           </div>
@@ -378,6 +383,21 @@ function setupDebugTools() {
         $('preview-output').innerHTML = html;
         $('preview-status').textContent = 'This is what the extension would currently extract on this tab.';
         previewResults.classList.remove('hidden');
+
+        // Show Grok correction button if xAI key is configured
+        const grokBtn = $('grok-correct-btn');
+        const grokResults = $('grok-results');
+        grokResults.style.display = 'none';
+        grokResults.innerHTML = '';
+        try {
+          const settings = await chrome.runtime.sendMessage({ action: 'GET_SETTINGS' });
+          if (settings?.xaiApiKey) {
+            grokBtn.style.display = 'inline-block';
+            grokBtn.onclick = () => runGrokCorrection(p, pageText);
+          } else {
+            grokBtn.style.display = 'none';
+          }
+        } catch (_) { grokBtn.style.display = 'none'; }
 
       } catch (err) {
         $('preview-status').textContent = 'Preview failed: ' + (err.message || err);
@@ -467,6 +487,65 @@ function setupDebugTools() {
         compareBtn.textContent = 'Compare with Current Tab';
       }
     });
+  }
+}
+
+async function runGrokCorrection(profile, pageText) {
+  const grokBtn = $('grok-correct-btn');
+  const grokResults = $('grok-results');
+  grokBtn.disabled = true;
+  grokBtn.textContent = 'Correcting with Grok...';
+  grokResults.style.display = 'block';
+  grokResults.innerHTML = '<div style="font-size:11px;color:#666;">Contacting xAI API...</div>';
+
+  try {
+    const res = await chrome.runtime.sendMessage({
+      action: 'CORRECT_WITH_GROK',
+      profile,
+      pageText
+    });
+
+    if (!res || !res.success) {
+      grokResults.innerHTML = `<div style="color:#dc2626;font-size:11px;">Grok correction failed: ${escapeHtml(res?.error || 'Unknown')}</div>`;
+      return;
+    }
+
+    const c = res.corrected || {};
+    const changed = (c.headline && c.headline !== profile.headline) || (c.currentCompany && c.currentCompany !== profile.currentCompany);
+
+    let html = '<div style="border-top:1px solid #ddd;padding-top:6px;margin-top:6px;">';
+    html += '<div style="font-weight:600;font-size:11px;margin-bottom:4px;">Grok-Corrected Values</div>';
+
+    const row = (label, heuristic, corrected) => {
+      const h = escapeHtml(heuristic || '(empty)');
+      const c2 = escapeHtml(corrected || '(empty)');
+      const diff = h !== c2;
+      if (!diff && !corrected) return '';
+      return `<div style="font-size:11px;margin:2px 0;display:flex;gap:8px;">
+        <span style="min-width:70px;font-weight:500;">${label}:</span>
+        <span style="color:#888;text-decoration:${diff ? 'line-through' : 'none'};">${h}</span>
+        ${diff ? `<span style="color:#16a34a;font-weight:600;">→ ${c2}</span>` : `<span>${c2}</span>`}
+      </div>`;
+    };
+
+    html += row('Name', profile.fullName, c.fullName);
+    html += row('Job Title', profile.headline, c.headline);
+    html += row('Organisation', profile.currentCompany, c.currentCompany);
+
+    if (!changed) {
+      html += '<div style="font-size:10px;color:#888;margin-top:4px;">Grok agrees with heuristic extraction — no corrections.</div>';
+    }
+
+    html += '</div>';
+    grokResults.innerHTML = html;
+  } catch (err) {
+    grokResults.innerHTML = `<div style="color:#dc2626;font-size:11px;">Grok correction failed: ${escapeHtml(err.message || err)}</div>`;
+  } finally {
+    grokBtn.disabled = false;
+    grokBtn.textContent = 'Correct with Grok';
+  }
+}
+    grokBtn.textContent = 'Correct with Grok';
   }
 }
 

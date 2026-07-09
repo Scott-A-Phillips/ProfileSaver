@@ -2037,7 +2037,8 @@ console.log('[LinkedIn→Notion] Content script loaded');
     if (message.action === 'PREVIEW_EXTRACTION') {
       try {
         const profile = extractProfileData();
-        sendResponse({ success: true, profile });
+        const pageText = (document.body?.innerText || document.body?.textContent || '').slice(0, 8000);
+        sendResponse({ success: true, profile, pageText });
       } catch (err) {
         sendResponse({ success: false, error: String(err) });
       }
