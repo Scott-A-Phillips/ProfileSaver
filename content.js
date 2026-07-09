@@ -234,7 +234,7 @@
           const blockText = cleanText(firstExp.innerText || firstExp.textContent);
           let lines = blockText.split('\n').map(l => cleanText(l)).filter(l => l.length > 2);
 
-          console.debug('[LinkedIn→Notion] First exp lines:', JSON.stringify(lines));
+          console.log('[LinkedIn→Notion] First exp lines:', JSON.stringify(lines));
 
           if (lines.length >= 1) {
             // Strict filtered scan (same predicate as nuclear) + immediate following-line company pairing.
@@ -262,7 +262,7 @@
                 // Pair with the company line that follows this role (most reliable)
                 for (let j = i + 1; j < Math.min(lines.length, i + 8); j++) {
                   const next = lines[j];
-                  console.debug('[LinkedIn→Notion] Pairing candidate at j=' + j + ':', JSON.stringify(next), 'passes?', next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next));
+                  console.log('[LinkedIn→Notion] Pairing candidate at j=' + j + ':', JSON.stringify(next), 'passes?', next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next));
                   if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next)) {
                     if (next.includes('·')) {
                       const comp = next.split('·')[0].trim();
