@@ -250,7 +250,8 @@
                              !/directs|led|responsible for|core areas|managed|oversaw/i.test(line) &&
                              !/\b(team|project|event|festival|diwali|hackathon|teamified|services?)\b/i.test(line) &&
                              !line.includes('http') && !line.includes('www.') && !/skill|top skill/i.test(line) &&
-                             !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line);
+                             !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line) &&
+               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line);
 
               if (isRole && !headline) {
                 headline = line;
@@ -376,7 +377,8 @@
                            !/directs|led|responsible for|core areas|managed|oversaw/i.test(line) &&
                            !/\b(team|project|event|festival|diwali|hackathon|teamified|services?)\b/i.test(line) &&
                            !line.includes('http') && !line.includes('www.') && !/skill|top skill/i.test(line) &&
-                           !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line);
+                           !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line) &&
+               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line);
 
             if (isRole && !headline) {
               headline = line;
