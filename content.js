@@ -1051,12 +1051,11 @@
           if (largest) src = largest;
         }
 
-        // Size upgrade to 800_800 for good display quality in Notion, but NEVER touch the query string.
-        // The e=...&v=beta&t=... signature must be preserved exactly as LinkedIn produced it.
-        if (src.includes('profile-displayphoto') || src.includes('licdn.com/dms/image')) {
-          src = src.replace(/shrink_\d+_\d+/g, 'shrink_800_800');
-          src = src.replace(/profile-displayphoto-shrink_\d+_\d+/g, 'profile-displayphoto-shrink_800_800');
-        }
+        // Use the URL as-is from LinkedIn. The srcset already provides the best signed size.
+        // Never modify the path — LinkedIn's CDN uses the t= query parameter as an HMAC over
+        // the entire path, so any rewrite (e.g. shrink_400_400 → shrink_800_800) would
+        // invalidate the signature and produce "Invalid t query string" errors.
+        console.debug('[LinkedIn→Notion] Profile photo URL:', src);
 
         if (src && src.startsWith('https://')) {
           profilePictureUrl = src;
