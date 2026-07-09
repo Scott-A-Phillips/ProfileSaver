@@ -807,6 +807,40 @@ console.log('[LinkedIn→Notion] Content script loaded');
       } catch (_) {}
     }
 
+    // Ultimate: try JSON-LD structured data embedded in the page
+    if (!currentCompany) {
+      try {
+        const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+        for (const script of scripts) {
+          const data = JSON.parse(script.textContent);
+          const items = Array.isArray(data) ? data : [data];
+          for (const item of items) {
+            if (item['@type'] === 'Person') {
+              if (item.worksFor) {
+                const name = typeof item.worksFor === 'object' ? item.worksFor.name : item.worksFor;
+                if (name && typeof name === 'string' && !/linkedin/i.test(name)) {
+                  currentCompany = name;
+                  break;
+                }
+              }
+              if (!currentCompany && item.memberOf && Array.isArray(item.memberOf)) {
+                for (const member of item.memberOf) {
+                  if (member['@type'] === 'Organization') {
+                    const name = member.name;
+                    if (name && typeof name === 'string' && !/linkedin/i.test(name)) {
+                      currentCompany = name;
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          if (currentCompany) break;
+        }
+      } catch (_) {}
+    }
+
     // Very last broad fallback for Job Title (headline) - only if still empty
     if (!headline || headline.length < 3) {
       try {
@@ -1171,7 +1205,8 @@ console.log('[LinkedIn→Notion] Content script loaded');
       _debug: {
         firstExpFound: !!firstExp,
         firstExpTag: firstExp ? firstExp.tagName : null,
-        headlineSource: headline ? (document.querySelector('.pv-top-card__headline') ? 'top-card' : 'experience') : 'empty'
+        headlineSource: headline ? (document.querySelector('.pv-top-card__headline') ? 'top-card' : 'experience') : 'empty',
+        companySource: currentCompany ? (document.title?.includes(currentCompany) ? 'title' : (document.querySelector('script[type="application/ld+json"]') ? 'jsonld' : 'other')) : 'none'
       }
     };
 
