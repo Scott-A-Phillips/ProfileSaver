@@ -190,6 +190,7 @@ console.log('[LinkedIn→Notion] Content script loaded');
     ], 300);
 
     let currentCompany = '';
+    let firstExp = null;
 
     // NOTE: The previous loose broad top-card scan for headline has been removed from here.
     // It was the main source of About-section text (and other long bio noise) leaking into Job Title.
@@ -204,7 +205,7 @@ console.log('[LinkedIn→Notion] Content script loaded');
       try {
         // Very aggressive selectors for the first/current experience entry
         console.log('[LinkedIn→Notion] Querying first experience...');
-        let firstExp = document.querySelector(
+        firstExp = document.querySelector(
           '#experience ~ .pvs-list__container .pvs-list__item, ' +
           'section#experience .pvs-list__item, ' +
           '[data-test-id*="experience-item"], ' +
