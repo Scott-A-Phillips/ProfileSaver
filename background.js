@@ -507,7 +507,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         const { profile, pageText } = message;
 
-        const system = 'You are an assistant that corrects LinkedIn profile data extraction. Given the raw page content and the extraction results, fix any errors in the extracted fields. Respond ONLY with a JSON object containing: name (string), headline (string), organisation (string). Use empty strings for unknown fields.';
+        const system = 'You are an assistant that corrects LinkedIn profile data extraction. Given the raw page content and the extraction results, fix any errors. Rules:\n1. "name" = the person\'s full name\n2. "headline" = ONLY the single most current/recent job title (e.g. "Service Architect"). Keep it short (under 80 chars). Do NOT concatenate multiple roles or list descriptions.\n3. "organisation" = the company name for that current role (e.g. "Government ICT Centre Valtori")\nRespond ONLY with a JSON object: {name, headline, organisation}. Use empty strings for unknown fields.';
 
         const userMsg = `Raw page content:\n${(pageText || '').slice(0, 6000)}\n\nCurrent extraction:\nName: ${profile.fullName || ''}\nJob Title: ${profile.headline || ''}\nOrganisation: ${profile.currentCompany || ''}\n\nCorrect the extraction based on the raw page content. Respond with only JSON.`;
 
