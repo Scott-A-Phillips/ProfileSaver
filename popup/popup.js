@@ -391,7 +391,9 @@ function setupDebugTools() {
         grokResults.innerHTML = '';
         try {
           const settings = await chrome.runtime.sendMessage({ action: 'GET_SETTINGS' });
+          console.log('[LinkedIn→Notion] GET_SETTINGS response:', settings);
           if (settings?.xaiApiKey) {
+            console.log('[LinkedIn→Notion] xAI key found, showing Grok button');
             grokBtn.style.display = 'inline-block';
             grokBtn.onclick = () => runGrokCorrection(p, pageText);
           } else {
@@ -542,9 +544,6 @@ async function runGrokCorrection(profile, pageText) {
     grokResults.innerHTML = `<div style="color:#dc2626;font-size:11px;">Grok correction failed: ${escapeHtml(err.message || err)}</div>`;
   } finally {
     grokBtn.disabled = false;
-    grokBtn.textContent = 'Correct with Grok';
-  }
-}
     grokBtn.textContent = 'Correct with Grok';
   }
 }

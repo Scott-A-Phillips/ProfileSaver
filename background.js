@@ -598,6 +598,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       if (typeof xaiApiKey === 'string') {
         toSave.xaiApiKey = xaiApiKey.trim() || '';
+        console.log('[LinkedIn→Notion] Saving xAI key, length:', toSave.xaiApiKey.length);
       }
       await chrome.storage.local.set(toSave);
       sendResponse({ success: true });
