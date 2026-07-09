@@ -424,6 +424,24 @@
               }
             }
           }
+
+          // Final company fallback: scan all lines for the longest clean company-like line
+          if (!currentCompany) {
+            let bestCompany = '';
+            for (let i = 0; i < Math.min(lines.length, 15); i++) {
+              const line = lines[i];
+              if (line.length > 3 && line.length < 70 &&
+                  !/:$/.test(line) &&
+                  !/^[-•]\s/.test(line) &&
+                  !/^\d{4}|Present|yr|yrs|mo|mos/i.test(line) &&
+                  !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line) &&
+                  !team|logo|Full-time|Part-time|more|see|view|expand/i.test(line) &&
+                  line.length > bestCompany.length) {
+                bestCompany = line;
+              }
+            }
+            if (bestCompany) currentCompany = bestCompany;
+          }
         }
       } catch (_) {}
     }
@@ -745,6 +763,40 @@
           if (parts.length > 1) {
             const afterAt = cleanText(parts[1].split(/ [|-] /)[0]);
             if (afterAt && afterAt.length > 2 && afterAt.length < 60) {
+              currentCompany = afterAt;
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
+    // Strong fallback: find company from the top card primary sub-text area
+    if (!currentCompany) {
+      try {
+        const companyEl = document.querySelector(
+          '.pv-text-details__right-panel .pv-text-details-about__right-panel-item:first-child .hoverable-link-text, ' +
+          '.pv-text-details-about__right-panel-item:first-child .hoverable-link-text, ' +
+          '.inline-show-more-text--is-collapsed .inline-show-more-text__text-collapsed, ' +
+          '.artdeco-entity-lockup__subtitle span'
+        );
+        if (companyEl) {
+          const t = cleanText(companyEl.innerText || companyEl.textContent);
+          if (t && t.length > 2 && t.length < 80 && !t.includes('@') && !t.includes('.com') && !/skill|top skill|featured/i.test(t)) {
+            currentCompany = t;
+          }
+        }
+      } catch (_) {}
+    }
+
+    // Final: try parsing company from the page title directly
+    if (!currentCompany) {
+      try {
+        const title = document.title || '';
+        if (title.includes(' at ')) {
+          const parts = title.split(' at ');
+          if (parts.length > 1) {
+            const afterAt = parts[1].split(/ [|-] /)[0].trim();
+            if (afterAt && afterAt.length > 2 && afterAt.length < 60 && !/linkedin/i.test(afterAt)) {
               currentCompany = afterAt;
             }
           }
