@@ -258,7 +258,7 @@
                 headline = line.replace(/^[-•]\s+/, '').trim();
 
                 // Pair with the company line that follows this role (most reliable)
-                for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
+                for (let j = i + 1; j < Math.min(lines.length, i + 8); j++) {
                   const next = lines[j];
                   if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next)) {
                     if (next.includes('·')) {
@@ -386,7 +386,7 @@
               headline = line.replace(/^[-•]\s+/, '').trim();
 
               // Pair with the company line that follows this role (most reliable)
-              for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
+              for (let j = i + 1; j < Math.min(lines.length, i + 8); j++) {
                 const next = lines[j];
                 if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next)) {
                   if (next.includes('·')) {
