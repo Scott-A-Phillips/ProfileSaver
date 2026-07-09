@@ -539,7 +539,44 @@ async function runGrokCorrection(profile, pageText) {
     }
 
     html += '</div>';
+
+    // Add Save button using corrected values
+    const profileUrl = profile.profileUrl || '';
+    html += `<button id="save-grok-btn" class="btn btn-primary" style="margin-top:8px;font-size:12px;">Save to Notion (Grok-corrected)</button>`;
+    html += '<div id="save-grok-status" style="font-size:11px;margin-top:4px;"></div>';
+
     grokResults.innerHTML = html;
+    grokResults.style.display = 'block';
+
+    // Wire up the save button
+    const saveGrokBtn = grokResults.querySelector('#save-grok-btn');
+    if (saveGrokBtn) {
+      saveGrokBtn.addEventListener('click', async () => {
+        saveGrokBtn.disabled = true;
+        saveGrokBtn.textContent = 'Saving...';
+        const statusDiv = grokResults.querySelector('#save-grok-status');
+        try {
+          const correctedProfile = {
+            ...profile,
+            fullName: c.fullName || profile.fullName,
+            headline: c.headline || profile.headline,
+            currentCompany: c.currentCompany || profile.currentCompany,
+            profileUrl: profileUrl
+          };
+          const res = await chrome.runtime.sendMessage({ action: 'SAVE_PROFILE', profile: correctedProfile });
+          if (res?.success) {
+            statusDiv.innerHTML = `<span style="color:#16a34a;">✅ Saved to Notion${res.url ? `: <a href="${escapeHtml(res.url)}" target="_blank" style="color:#0a66c2;">${escapeHtml(res.url)}</a>` : ''}</span>`;
+          } else {
+            statusDiv.innerHTML = `<span style="color:#dc2626;">❌ ${escapeHtml(res?.error || 'Save failed')}</span>`;
+          }
+        } catch (err) {
+          statusDiv.innerHTML = `<span style="color:#dc2626;">❌ ${escapeHtml(err.message || err)}</span>`;
+        } finally {
+          saveGrokBtn.disabled = false;
+          saveGrokBtn.textContent = 'Save to Notion (Grok-corrected)';
+        }
+      });
+    }
   } catch (err) {
     grokResults.innerHTML = `<div style="color:#dc2626;font-size:11px;">Grok correction failed: ${escapeHtml(err.message || err)}</div>`;
   } finally {
