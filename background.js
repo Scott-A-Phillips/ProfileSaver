@@ -518,7 +518,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: 'grok-2',
+            model: 'grok-4.3',
             messages: [
               { role: 'system', content: system },
               { role: 'user', content: userMsg }
