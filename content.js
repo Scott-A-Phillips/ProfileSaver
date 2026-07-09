@@ -251,7 +251,8 @@
                              !/\b(team|project|event|festival|diwali|hackathon|teamified|services?)\b/i.test(line) &&
                              !line.includes('http') && !line.includes('www.') && !/skill|top skill/i.test(line) &&
                              !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line) &&
-               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line);
+               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line) &&
+               !/^[-•]\s/.test(line);
 
               if (isRole && !headline) {
                 headline = line;
@@ -259,7 +260,7 @@
                 // Pair with the company line that follows this role (most reliable)
                 for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
                   const next = lines[j];
-                  if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•')) {
+                  if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next)) {
                     if (next.includes('·')) {
                       const comp = next.split('·')[0].trim();
                       if (comp.length > 2 && comp.length < 70 && !currentCompany) {
@@ -378,7 +379,8 @@
                            !/\b(team|project|event|festival|diwali|hackathon|teamified|services?)\b/i.test(line) &&
                            !line.includes('http') && !line.includes('www.') && !/skill|top skill/i.test(line) &&
                            !/^\s*experience\s*$/i.test(line) && !/^\s*(about|skills?|featured|education|licenses?)\s*$/i.test(line) &&
-               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line);
+               !/:$/.test(line) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(line) &&
+               !/^[-•]\s/.test(line);
 
             if (isRole && !headline) {
               headline = line;
@@ -386,7 +388,7 @@
               // Pair with the company line that follows this role (most reliable)
               for (let j = i + 1; j < Math.min(lines.length, i + 4); j++) {
                 const next = lines[j];
-                if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•')) {
+                if (next.length > 2 && next.length < 70 && !/^\d{4}|Present|yr|yrs|mo|mos/i.test(next) && !next.includes('•') && !/:$/.test(next) && !/key contributions?|responsibilities?|achievements?|projects?|highlights/i.test(next) && !/^[-•]\s/.test(next)) {
                   if (next.includes('·')) {
                     const comp = next.split('·')[0].trim();
                     if (comp.length > 2 && comp.length < 70 && !currentCompany) {
