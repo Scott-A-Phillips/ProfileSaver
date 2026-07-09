@@ -176,15 +176,15 @@
     // the user cares about most. Declare both early to avoid TDZ issues in the
     // defensive extraction blocks below.
     let headline = queryText([
-      '.text-body-medium.break-words',
-      '.pv-top-card .ph5 .text-body-medium',
       '.pv-top-card__headline',
-      '.text-body-medium.t-black--light.break-words',
       '[data-test-id="profile-headline"]',
       'div[data-test-id="profile-headline"]',
-      '.ph5 .text-body-medium',
       'div[data-test-id*="headline"]',
-      'h2.break-words.t-black--light'
+      '.pv-top-card .ph5 .text-body-medium',
+      '.ph5 .text-body-medium',
+      '.text-body-medium.t-black--light.break-words',
+      'h2.break-words.t-black--light',
+      '.text-body-medium.break-words'
     ], 300);
 
     let currentCompany = '';
@@ -431,8 +431,11 @@
     // Fallback for profiles without a traditional Experience section (common for consultants, founders, freelancers)
     // Scan early prominent text for role + company patterns (e.g. "CEO + Founder", "Founder at Company")
 
-    // Clear obviously bad headlines that leaked from section headings
+    // Clear obviously bad headlines that leaked from section headings or About-section text
     if (headline && /^\s*(experience|about|skills?|featured|education|licenses?)\s*$/i.test(headline)) {
+      headline = '';
+    }
+    if (headline && (headline.includes('core expertise') || headline.includes('My core') || headline.includes('about me') || /^I\s[a-z]/.test(headline))) {
       headline = '';
     }
 
