@@ -201,6 +201,7 @@
     if (true) {
       try {
         // Very aggressive selectors for the first/current experience entry
+        console.log('[LinkedIn→Notion] Querying first experience...');
         let firstExp = document.querySelector(
           '#experience ~ .pvs-list__container .pvs-list__item, ' +
           'section#experience .pvs-list__item, ' +
@@ -230,6 +231,9 @@
           }
         }
 
+        if (!firstExp) {
+          console.log('[LinkedIn→Notion] firstExp not found with primary selectors');
+        }
         if (firstExp) {
           const blockText = cleanText(firstExp.innerText || firstExp.textContent);
           let lines = blockText.split('\n').map(l => cleanText(l)).filter(l => l.length > 2);
