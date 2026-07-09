@@ -7,6 +7,7 @@
  * - Shows success/error toasts
  * - Communicates with background service worker for Notion API calls
  */
+console.log('[LinkedIn→Notion] Content script loaded');
 
 (() => {
   const BUTTON_ID = 'lin-to-notion-btn';
