@@ -226,10 +226,11 @@ console.log('[LinkedIn→Notion] Content script loaded');
 
         // Fallback: grab the first list item or entity inside the experience section
         if (!firstExp) {
-          const expContainer = document.querySelector('#experience, section[id*="experience"], div[id*="experience"]');
+          const expContainer = document.querySelector('#experience, section[id*="experience"], div[id*="experience"], [data-section="experience"], section[data-test-id*="experience"]');
           if (expContainer) {
             firstExp = expContainer.querySelector(
-              'li, .pvs-list__item, [data-test-id*="experience"], .artdeco-list__item, .pvs-entity, [class*="entity"]'
+              'li, .pvs-list__item, [data-test-id*="experience"], .artdeco-list__item, .pvs-entity, [class*="entity"], ' +
+              '.display-flex > div, [class*="list-item"], [data-view-name*="profile-component-entity"]'
             );
           }
         }
@@ -609,16 +610,56 @@ console.log('[LinkedIn→Notion] Content script loaded');
     // Try to find current company directly in the top card area
     if (!currentCompany) {
       try {
-        const top = document.querySelector('.pv-top-card, .ph5, .scaffold-layout-top-card');
+        const top = document.querySelector('.pv-top-card, .ph5, .scaffold-layout-top-card, .profile-card, [class*="top-card"]');
         if (top) {
           const candidates = top.querySelectorAll(
-            '[data-test-id*="company"], .text-body-small.t-black--light.break-words, .pv-top-card__headline + *'
+            '[data-test-id*="company"], .text-body-small.t-black--light.break-words, .pv-top-card__headline + *, ' +
+            'a[href*="/company/"], a[href*="/school/"], .artdeco-entity-lockup__subtitle span, ' +
+            '.inline-show-more-text *[aria-hidden], .text-body-small span'
           );
           for (const el of candidates) {
             const t = cleanText(el.innerText || el.textContent);
             if (t && t.length > 2 && t.length < 80 && !t.includes('@') && !t.includes(',') &&
                 !t.includes('http') && !t.includes('www.') && !/skill|top skill|featured|license|certif/i.test(t)) {
               currentCompany = t;
+              break;
+            }
+          }
+        }
+
+        // Also try finding any link containing /company/ in the profile area
+        if (!currentCompany) {
+          const companyLinks = document.querySelectorAll(
+            'a[href*="/company/"], a[href*="/school/"]'
+          );
+          for (const link of companyLinks) {
+            const txt = cleanText(link.innerText || link.textContent);
+            if (txt && txt.length > 2 && txt.length < 60 && !/linkedin/i.test(txt)) {
+              currentCompany = txt;
+              break;
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
+    // Broad text-based scan of the top card: find first non-headline line that looks like a company
+    if (!currentCompany) {
+      try {
+        const top = document.querySelector('.pv-top-card, .ph5, .scaffold-layout-top-card, .profile-card, [class*="top-card"]');
+        if (top) {
+          const lines = (top.innerText || top.textContent || '').split('\n').map(l => l.trim()).filter(l => l.length > 2);
+          const headlineLower = (headline || '').toLowerCase();
+          for (const line of lines) {
+            const lower = line.toLowerCase();
+            if (lower === headlineLower || lower.includes(headlineLower)) continue;
+            // Skip lines that look like sections, numbers, dates, locations
+            if (/^\d{4}|present|\.{3}|more|show|see|view|expand/i.test(lower)) continue;
+            if (/located|remote|hybrid|on.?site/i.test(lower)) continue;
+            if (line.length > 3 && line.length < 70 && !/linkedin/i.test(line) &&
+                !line.includes('@') && !line.includes('http') && !line.startsWith('·') &&
+                !line.startsWith('+') && !/^\d/.test(line)) {
+              currentCompany = line;
               break;
             }
           }
@@ -834,9 +875,42 @@ console.log('[LinkedIn→Notion] Content script loaded');
                   }
                 }
               }
+              if (!currentCompany && item.alumniOf) {
+                const name = typeof item.alumniOf === 'object' ? item.alumniOf.name : item.alumniOf;
+                if (name && typeof name === 'string' && !/linkedin/i.test(name)) {
+                  currentCompany = name;
+                }
+              }
+              if (!currentCompany && item.affiliation && Array.isArray(item.affiliation)) {
+                for (const aff of item.affiliation) {
+                  const name = typeof aff === 'object' ? aff.name : aff;
+                  if (name && typeof name === 'string' && !/linkedin/i.test(name)) {
+                    currentCompany = name;
+                    break;
+                  }
+                }
+              }
             }
           }
           if (currentCompany) break;
+        }
+      } catch (_) {}
+    }
+
+    // Extract company from meta description if still empty
+    if (!currentCompany) {
+      try {
+        const meta = document.querySelector('meta[name="description"], meta[property="og:description"]');
+        if (meta) {
+          const desc = meta.getAttribute('content') || '';
+          // Often: "Name - Title at Company | LinkedIn" or "Name | LinkedIn"
+          const atMatch = desc.match(/\bat\s+([A-Z][A-Za-z0-9\s&.-]{2,50})(?:\||$| -)/);
+          if (atMatch) {
+            const candidate = atMatch[1].trim();
+            if (candidate && !/linkedin/i.test(candidate)) {
+              currentCompany = candidate;
+            }
+          }
         }
       } catch (_) {}
     }
